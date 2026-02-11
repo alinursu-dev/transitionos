@@ -1,3 +1,7 @@
 .DS_Store
 .venv
 transitionos.code-workspace
+__pycache__/*
+app/__pycache__/*   
+migrations/*
+instance/transitionos.db
