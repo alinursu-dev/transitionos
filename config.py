@@ -17,3 +17,5 @@ class Config:
     SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or \
         'sqlite:///' + str(INSTANCE_DIR / 'transitionos.db')
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    # Receipt uploads (Expense.receipt_path)
+    UPLOAD_FOLDER = str(INSTANCE_DIR / 'uploads')
