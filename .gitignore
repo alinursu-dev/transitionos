@@ -6,3 +6,4 @@ app/__pycache__/*
 migrations/*
 instance/transitionos.db
 docs/
+.env

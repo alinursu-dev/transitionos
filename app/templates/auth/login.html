@@ -1,29 +1,71 @@
+<!-- app/templates/auth/login.html -->
 {% extends "base.html" %}
-{% block title %}Login{% endblock %}
+
+{% block title %}Login - TransitionOS{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
-  <div class="col-md-6 col-lg-4">
-    <div class="card shadow">
-      <div class="card-body">
-        <h2 class="card-title text-center mb-4">Login to TransitionOS</h2>
-        <form method="POST" action="{{ url_for('auth.login') }}">
-          <div class="mb-3">
-            <label for="username" class="form-label">Username</label>
-            <input type="text" class="form-control" id="username" name="username" required autofocus>
-          </div>
-          <div class="mb-3">
-            <label for="password" class="form-label">Password</label>
-            <input type="password" class="form-control" id="password" name="password" required>
-          </div>
-          <div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="remember" name="remember">
-            <label class="form-check-label" for="remember">Remember me (24 hours)</label>
-          </div>
-          <button type="submit" class="btn btn-primary w-100">Login</button>
-        </form>
-      </div>
+    <div class="col-md-5">
+        <div class="card shadow-sm">
+            <div class="card-body p-5">
+                <h2 class="card-title text-center mb-4">
+                    <i class="bi bi-gear-fill text-primary"></i> TransitionOS
+                </h2>
+                <p class="text-center text-muted mb-4">
+                    Your command center for Hanoi relocation & freelance career
+                </p>
+                
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <!-- Username -->
+                    <div class="mb-3">
+                        {{ form.username.label(class="form-label") }}
+                        {{ form.username(class="form-control" + (" is-invalid" if form.username.errors else "")) }}
+                        {% if form.username.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.username.errors[0] }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Password -->
+                    <div class="mb-3">
+                        {{ form.password.label(class="form-label") }}
+                        {{ form.password(class="form-control" + (" is-invalid" if form.password.errors else "")) }}
+                        {% if form.password.errors %}
+                            <div class="invalid-feedback">
+                                {{ form.password.errors[0] }}
+                            </div>
+                        {% endif %}
+                    </div>
+                    
+                    <!-- Remember Me -->
+                    <div class="mb-3 form-check">
+                        {{ form.remember_me(class="form-check-input") }}
+                        {{ form.remember_me.label(class="form-check-label") }}
+                    </div>
+                    
+                    <!-- Submit -->
+                    <div class="d-grid">
+                        {{ form.submit(class="btn btn-primary btn-lg") }}
+                    </div>
+                </form>
+                
+                <hr class="my-4">
+                
+                <div class="text-center">
+                    <p class="text-muted small mb-0">
+                        <i class="bi bi-shield-check"></i> Secured with Flask-Login
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Status Banner -->
+        <div class="alert alert-info text-center mt-4">
+            <strong>🎯 259 days to Hanoi</strong> | €3,200/€5,500 saved (58%)
+        </div>
     </div>
-  </div>
 </div>
 {% endblock %}

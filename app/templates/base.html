@@ -1,138 +1,98 @@
+<!-- app/templates/base.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{% block title %}TransitionOS{% endblock %}</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --transitionos-bg: #f8f6f3;
-      --transitionos-card: #ffffff;
-      --transitionos-accent: #0d6b5c;
-      --transitionos-accent-hover: #0a5549;
-      --transitionos-muted: #5c6b6a;
-      --transitionos-border: #e8e4df;
-    }
-    body {
-      font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
-      background: var(--transitionos-bg);
-      color: #2a2a2a;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-    main {
-      flex: 1;
-      padding-top: 1.5rem;
-      padding-bottom: 3rem;
-    }
-    .navbar-transitionos {
-      background: var(--transitionos-card) !important;
-      border-bottom: 1px solid var(--transitionos-border);
-      box-shadow: 0 1px 0 rgba(0,0,0,0.04);
-    }
-    .navbar-transitionos .navbar-brand {
-      font-weight: 600;
-      color: var(--transitionos-accent);
-      letter-spacing: -0.02em;
-    }
-    .navbar-transitionos .nav-link {
-      font-weight: 500;
-      color: var(--transitionos-muted);
-      padding: 0.5rem 0.75rem;
-      border-radius: 6px;
-    }
-    .navbar-transitionos .nav-link:hover,
-    .navbar-transitionos .nav-link.active {
-      color: var(--transitionos-accent);
-      background: rgba(13, 107, 92, 0.08);
-    }
-    .btn-transitionos {
-      background: var(--transitionos-accent);
-      border-color: var(--transitionos-accent);
-      color: #fff;
-      font-weight: 500;
-    }
-    .btn-transitionos:hover {
-      background: var(--transitionos-accent-hover);
-      border-color: var(--transitionos-accent-hover);
-      color: #fff;
-    }
-    .btn-primary {
-      background: var(--transitionos-accent);
-      border-color: var(--transitionos-accent);
-    }
-    .btn-primary:hover {
-      background: var(--transitionos-accent-hover);
-      border-color: var(--transitionos-accent-hover);
-    }
-    .card {
-      border: 1px solid var(--transitionos-border);
-      border-radius: 12px;
-      background: var(--transitionos-card);
-    }
-    .alert-success { border-left: 4px solid var(--transitionos-accent); }
-    .alert-danger { border-left: 4px solid #c53030; }
-    .alert-info { border-left: 4px solid #2b6cb0; }
-  </style>
-  {% block extra_head %}{% endblock %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TransitionOS{% endblock %}</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-  <nav class="navbar navbar-expand-md navbar-transitionos">
-    <div class="container">
-      <a class="navbar-brand" href="{{ url_for('dashboard.index') if current_user.is_authenticated else url_for('auth.login') }}">TransitionOS</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          {% if current_user.is_authenticated %}
-            <li class="nav-item">
-              <a class="nav-link {{ 'active' if request.endpoint == 'dashboard.index' else '' }}" href="{{ url_for('dashboard.index') }}">Dashboard</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link {{ 'active' if request.endpoint and request.endpoint.startswith('expenses.') else '' }}" href="{{ url_for('expenses.list') }}">Expenses</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
-            </li>
-            <li class="nav-item">
-              <span class="nav-link text-muted small">{{ current_user.username }}</span>
-            </li>
-          {% else %}
-            <li class="nav-item">
-              <a class="nav-link {{ 'active' if request.endpoint == 'auth.login' else '' }}" href="{{ url_for('auth.login') }}">Login</a>
-            </li>
-          {% endif %}
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <main class="container">
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        <div class="row mb-3">
-          <div class="col-12">
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-              </div>
-            {% endfor %}
-          </div>
+    <!-- Navigation Bar -->
+    {% if current_user.is_authenticated %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{{ url_for('dashboard.index') }}">
+                <i class="bi bi-gear-fill"></i> TransitionOS
+            </a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard.index') }}">
+                            <i class="bi bi-speedometer2"></i> Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('expenses.list') }}">
+                            <i class="bi bi-wallet2"></i> Expenses
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('expenses.simulator') }}">
+                            <i class="bi bi-calculator"></i> Hanoi Simulator
+                        </a>
+                    </li>
+                </ul>
+                
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="bi bi-person-circle"></i> {{ current_user.username }}
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item" href="{{ url_for('auth.logout') }}">
+                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
         </div>
-      {% endif %}
-    {% endwith %}
-
-    {% block content %}{% endblock %}
-  </main>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-  {% block scripts %}{% endblock %}
+    </nav>
+    {% endif %}
+    
+    <!-- Flash Messages -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
+    
+    <!-- Main Content -->
+    <main class="container mt-4 mb-5">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-light text-center text-muted py-3 mt-auto">
+        <div class="container">
+            <small>TransitionOS v1.0 | Built with Flask & determination 🚀</small>
+        </div>
+    </footer>
+    
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

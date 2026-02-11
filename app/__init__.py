@@ -1,47 +1,50 @@
 # app/__init__.py
-import os
-from flask import Flask, redirect, url_for
-from flask_login import current_user
-from config import Config
-from app.extensions import db, login_manager, migrate
+from flask import Flask
+from config import config
+from app.extensions import db, login_manager
+from app.models import User
 
-
-def create_app(config_class=Config):
+def create_app(config_name='development'):
+    """
+    Flask application factory.
+    Creates and configures the Flask application with all extensions and blueprints.
+    """
     app = Flask(__name__)
-    app.config.from_object(config_class)
+
+    # Load configuration
+    app.config.from_object(config[config_name])
 
     # Initialize extensions
     db.init_app(app)
     login_manager.init_app(app)
-    migrate.init_app(app, db)
 
-    # Import here to avoid circular imports
-    from app.models import User
+    # Flask-Login configuration
+    login_manager.login_view = 'auth.login' # Redirect to login page if user is not logged in
+    login_manager.login_message = 'Please log in to access this page.'
+    login_manager.login_message_category = 'info'
 
     @login_manager.user_loader
     def load_user(user_id):
+        """
+        Flask-Login user loader callback.
+        Returns User object for the given user_id in session.
+        """
         return User.query.get(int(user_id))
 
-    # Ensure data folders exists
-    os.makedirs(app.config['UPLOAD_FOLDER'], exist_ok=True)
-
-    # Register blueprints when they have routes
-    from app.auth.routes import auth_bp
-    from app.dashboard.routes import dashboard_bp
-    from app.expenses.routes import expenses_bp
-
+    # Register blueprints
+    from app.auth import auth_bp
     app.register_blueprint(auth_bp, url_prefix='/auth')
-    app.register_blueprint(dashboard_bp, url_prefix='/dashboard')
+
+    from app.dashboard import dashboard_bp
+    app.register_blueprint(dashboard_bp, url_prefix='/')
+
+    from app.expenses import expenses_bp
     app.register_blueprint(expenses_bp, url_prefix='/expenses')
 
-    @app.route('/')
-    def index():
-        if current_user.is_authenticated:
-            return redirect(url_for('dashboard.index'))
-        return redirect(url_for('auth.login'))
+    # Create database tables
+    with app.app_context():
+        db.create_all()
 
     return app
 
 
-# So "flask" CLI finds the app when FLASK_APP=app
-app = create_app()
